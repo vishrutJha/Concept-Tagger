@@ -563,17 +563,8 @@ def get_page(url):
         content = re.subn(r'<(script).*?</\1>(?s)', '', data)[0]
         content = re.subn(r'<(style).*?</\1>(?s)', '', content)[0]
         return content
-    except urllib2.HTTPError, e:
-	checksLogger.error('HTTPError = ' + str(e.code))
-	return ""
-    except urllib2.URLError, e:
-	checksLogger.error('URLError = ' + str(e.reason))
-	return ""
-    except httplib.HTTPException, e:
-	checksLogger.error('HTTPException')
-	return ""
     except Exception:
-	checksLogger.error('generic exception: ' + traceback.format_exc())
+	print "generic exception: "+url
 	return ""
 
 def processDb():
@@ -581,15 +572,16 @@ def processDb():
 #   url = raw_input() 
     domains = coll.find()
     for item in domains:
+      if not "tags" in item.keys():
 	text = get_page("http://"+item["Domain"])
 	try:
 	    text = unicode(text,'UTF-8')
+    	    #print text
+    	    striptext = strip_tags(text)
+    	    text = striptext
 	except Exception, e:
 	    print "Decode error at "+item["Domain"]
 	    continue
-    	#print text
-    	striptext = strip_tags(text)
-    	text = striptext
     	keywords = []
 
     	words = text.split()
@@ -597,7 +589,7 @@ def processDb():
     	    if not w.lower() in stopwords:
 	    	keywords.append(w)
 
-	coll.update({'_id':item["_id"]},{'$set':{"tags":keywords}},{'upsert':"false"})
+	coll.update({'_id':item["_id"]},{'$set':{"tags":keywords}},False)
     	print keywords
 
 def main():
