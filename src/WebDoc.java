@@ -29,7 +29,9 @@ public class WebDoc {
 		String[] seeds = {
 				"http://www.alexa.com/topsites",
 				"http://en.wikipedia.org/wiki/List_of_most_popular_websites",
-				"http://moz.com/top500"
+				"http://moz.com/top500",
+				"http://www.w3schools.com/",
+				"https://www.google.co.in/search?q=java+mongodb+tutorial&oq=java+mongod&aqs=chrome.4.69i59j69i57j0l4.3199j0j4&sourceid=chrome&es_sm=122&ie=UTF-8#q=best+tutorials"
 				};
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -98,7 +100,6 @@ public class WebDoc {
 				try {
 					coll.insert(new BasicDBObject("Domain", baseUrl));
 				} catch (MongoException e){
-					e.printStackTrace();
 					System.out.println("Duplicate");
 				}
 				
