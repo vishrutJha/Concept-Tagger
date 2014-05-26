@@ -1,0 +1,34 @@
+Concept-Tagger
+==============
+
+Web Crawler with concept tagging for crawled websites
+
+Requirements:
+  + python 2.7+
+  + mongoDB
+
+Dependencies:
+  + jsoup
+  + MongoDriver java
+  + pymongo
+  + urllib2
+
+Set UP:
+
+1> Install mongodb on your machine:
+   
+    Follow guide as per your OS:
+
+	http://docs.mongodb.org/manual/installation/
+
+2> Set up python dependencies:
+
+    	sudo apt-get install python-pip
+
+    for windows download pip package for python
+	
+	https://pypi.python.org/pypi/pip
+
+    pip install pymongo
+    pip install urllib2  # may not be required
+  
