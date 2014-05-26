@@ -5,18 +5,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bson.BSONObject;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
 public class WebDoc {
@@ -98,7 +95,12 @@ public class WebDoc {
 				crawledList.add(baseUrl);
 				System.out.println("Current URL is :"+ baseUrl );
 
-//				coll.insert(new BasicDBObject("Domain", baseUrl));
+				try {
+					coll.insert(new BasicDBObject("Domain", baseUrl));
+				} catch (MongoException e){
+					e.printStackTrace();
+					System.out.println("Duplicate");
+				}
 				
 				toCrawlList.remove(new String(url));
 			} else {
