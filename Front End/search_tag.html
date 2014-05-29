@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="static/js/jquery.js"></script>
+    <script src="static/js/bootstrap.js"></script>
+    <link href="http://localhost/static/css/bootstrap.css" rel="stylesheet"/>
+    <link href="http://localhost/static/css/jquery.dataTables.css" rel="stylesheet"/>
+    <script type="text/javascript" src="static/js/jquery.dataTables.js"></script>
+</head>
+<body>
+
+  <div id="wrap">
+    <div id="main" role="main" style="margin-left: -10px;">
+      <div class="block">
+        <br/>
+        <!--Other Urls-->
+
+        <!-- <div class="grid-content overflow"> -->
+        <div class="panel-group" id="accordion" style="padding: 35px;">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">
+		  <i>Search Craler Feed</i>
+              </h2>
+            </div>
+          </div>
+
+	  <input style="width:100%;" type="text" class="span10" id="search_query" value="" placeholder="Enter keywords/link">
+   	  <br><br> 
+	  <table class="table table-striped table-bordered table-hover" id="search-results">
+	  </table>
+
+        </div>
+    <!--Other Urls END-->
+
+  </div>
+</div>
+</div>
+
+<script type="text/javascript">
+
+$("#search_query").keyup(function (e) {
+    if (e.keyCode == 13) {
+    	search();
+    }
+});
+
+function setDataTable(){
+	$('#search-results').dataTable({
+		"bPaginate":true,
+		"bStateSave":true,
+		"bDestroy": true,
+		"bFilter":false,
+		"sPaginationType":"full_numbers",
+		"fnStateSave": function (oSettings, oData) {
+	              localStorage.setItem( 'DataTables_'+window.location.pathname, JSON.stringify(oData) );
+        	},
+	        "fnStateLoad": function (oSettings) {
+                	return JSON.parse( localStorage.getItem('DataTables_'+window.location.pathname) );
+             	}
+});
+
+}
+
+function showStats(data){
+
+document.getElementById("posts_aggr").innerHTML=data.posts;
+document.getElementById("like_aggr").innerHTML=data.likes;
+document.getElementById("comm_aggr").innerHTML=data.comments;
+document.getElementById("pph_aggr").innerHTML=data.pph;
+
+}
+
+function showRes(data){
+
+    var thead = "<thead><th>Source</th><th>link</th><th>Tags</th></thead>";
+
+    var results = document.getElementById("search-results");
+    results.innerHTML=thead;
+    content="";
+    for(i in data){
+	content += "<tr><td>"+data[i].domain+"</td>";
+	content += "<td><a href=\"http:\\\\www."+data[i].domain+"\">"+data[i].domain+"</a></td>";
+	if(data[i].tags.length>1){
+		content += "<td>";
+		for(t in data[i].tags){ content+="<div class=\"btn btn-default\" >"+data[i].tags[t]+"</div>"; if(t>50) break;}
+		content+="</td></tr>";
+	} else {
+		content += "<td><div class=\"btn btn-default\">"+data[i].domain+"</div></td></tr>";
+	}
+    }
+    results.innerHTML+=content;
+   
+//    showStats(data.stats);
+
+    setDataTable(); 
+
+}
+
+function search(){
+
+var link = "tagsearch.php";
+var term = document.getElementById("search_query").value;
+var url = link+'?q='+term;
+
+getContents(url, showRes);
+
+}
+
+function getContents(url, callback){
+
+	$.ajax({
+	  url: url,
+	  dataType: "JSON",
+	  success: function(data, msg){
+		console.log(data);
+		callback(data);
+	  },
+	  error: function(msg){
+		console.log(msg.responseText);	
+	  }
+	});
+
+}
+</script>
+</body>
+</html>
